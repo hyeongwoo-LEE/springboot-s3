@@ -1,4 +1,4 @@
 cloud:
   aws:
     credentials:
-      secret-key: 
+      secret-key:
