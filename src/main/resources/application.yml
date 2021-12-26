@@ -17,15 +17,23 @@ spring:
         format_sql : true
 
 cloud:
-  s3:
-    bucket: bucket-hyeongwoo
-  region:
-    auto: false
-    static: ap-northeast-2
-  stack:
-    auto: false
-  credentials:
-    instance-profile: true
+  aws:
+    s3:
+      bucket: bucket-hyeongwoo
+    region:
+      auto: false
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instance-profile: true
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
 
 
 
