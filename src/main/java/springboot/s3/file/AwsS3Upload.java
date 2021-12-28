@@ -1,6 +1,7 @@
 package springboot.s3.file;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -28,25 +29,25 @@ public class AwsS3Upload {
     
     public Map<String,String> S3Upload(File uploadFile, String storeFilename){
 
-//        String folderPath = makeFolder();
-//        String storeFullPath = getStoreFullPath(folderPath, storeFilename);
+        //String folderPath = makeFolder();
 
-        putS3(uploadFile, storeFilename);
+        String folderPath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+
+        String storeFullPath = getStoreFullPath(folderPath, storeFilename);
+
+        putS3(uploadFile, storeFullPath);
 
         //File 로 전환되면서 로컬에 파일 생성된것을 삭제합니다.
         removeNewFile(uploadFile);
 
         Map<String,String> pathMap = new HashMap<>();
-        pathMap.put("folderPath","guddn");
+        pathMap.put("folderPath", folderPath);
         pathMap.put("storeFilename", storeFilename);
 
         return pathMap;
     }
 
     private String putS3(File uploadFile, String storeFullPath){
-
-        System.out.println("=======================");
-        System.out.println(bucket);
 
         amazonS3.putObject(new PutObjectRequest(bucket, storeFullPath, uploadFile)
                 // 읽기 public 권한 부여
@@ -65,19 +66,6 @@ public class AwsS3Upload {
 
 
     public String getStoreFullPath(String folderPath, String storeFilename){
-        return folderPath + File.separator + storeFilename;
-    }
-    
-    private String makeFolder() {
-
-        String folderPath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-
-        log.info("folderPath: " + folderPath);
-
-        if(!amazonS3.doesObjectExist(bucket,folderPath+"/")){
-            amazonS3.putObject(bucket,folderPath+"/",new ByteArrayInputStream(new byte[0]), new ObjectMetadata());
-        }
-
-        return folderPath;
+        return folderPath + "/" + storeFilename;
     }
 }
